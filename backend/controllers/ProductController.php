@@ -4,9 +4,14 @@ namespace backend\controllers;
 
 use common\models\Product;
 use backend\models\search\ProductSearch;
+use yii\db\Exception;
+use yii\helpers\FileHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
+use function PHPUnit\Framework\exactly;
+use function PHPUnit\Framework\isEmpty;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -64,6 +69,7 @@ class ProductController extends Controller
      * Creates a new Product model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
+     * @throws Exception
      */
     public function actionCreate()
     {
@@ -71,6 +77,29 @@ class ProductController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                // getting image file from the form
+                $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+
+                if(isset($model->imageFile)){
+                    //setting the files path on desired format on name
+                    $model->image= '/products/'.\Yii::$app->security->generateRandomString(255).'/'.$model->imageFile->name;
+//                    preg_replace('/\s+/', '', $model->imageFile->name)
+                }
+
+                $ok= $model->save();
+                $transaction = \Yii::$app->db->beginTransaction();
+                if ($ok){
+                    //adding the full path to find the file on the system
+                    $fullPath = \Yii::getAlias('@frontend/web/storage'.$model->image);
+                    $dir = dirname($fullPath);
+                    // create the directory into the specified path
+                    if ( !FileHelper::createDirectory($dir) | $model->imageFile->saveAs($fullPath)) {
+                        $transaction->rollBack();
+                        return false;
+                    }
+                    $transaction->commit();
+
+                }
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
