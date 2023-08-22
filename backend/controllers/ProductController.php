@@ -87,18 +87,13 @@ class ProductController extends Controller
                 }
 
                 $ok= $model->save();
-                $transaction = \Yii::$app->db->beginTransaction();
-                if ($ok){
+                if ($ok && $model->imageFile){
                     //adding the full path to find the file on the system
                     $fullPath = \Yii::getAlias('@frontend/web/storage'.$model->image);
                     $dir = dirname($fullPath);
                     // create the directory into the specified path
-                    if ( !FileHelper::createDirectory($dir) | $model->imageFile->saveAs($fullPath)) {
-                        $transaction->rollBack();
-                        return false;
-                    }
-                    $transaction->commit();
-
+                    FileHelper::createDirectory($dir);
+                    $model->imageFile->saveAs($fullPath);
                 }
                 return $this->redirect(['view', 'id' => $model->id]);
             }
