@@ -34,6 +34,8 @@ class Product extends \yii\db\ActiveRecord
      * @var UploadedFile
      */
     public $imageFile;
+    const STATUS_PUBLISHED = 1;
+    const STATUS_UNPUBLISHED = 0;
     /**
      * {@inheritdoc}
      */
@@ -75,15 +77,15 @@ class Product extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'description' => 'Description',
+            'name' => 'Nome',
+            'description' => 'Descricao',
             'image' => 'Product Image',
             'imageFile' => 'Product Image',
-            'price' => 'Price',
-            'status' => 'Published',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'created_by' => 'Created By',
+            'price' => 'Preco',
+            'status' => 'Publicado',
+            'created_at' => 'Data de Criacao',
+            'updated_at' => 'Data de Actualizacao',
+            'created_by' => 'Criado por',
             'updated_by' => 'Updated By',
         ];
     }
@@ -146,5 +148,12 @@ class Product extends \yii\db\ActiveRecord
         return Yii::$app->params['frontendUrl'].'/storage'.$this->image;
             }
         return Yii::$app->params['frontendUrl'].'/img/no_image.svg';
+    }
+
+    /**
+     * @return string
+     */
+    public function getShortDescription(){
+        return \yii\helpers\StringHelper::truncateWords(strip_tags($this->description), 30);
     }
 }
