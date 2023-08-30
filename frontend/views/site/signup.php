@@ -1,24 +1,35 @@
 <?php
 
 /** @var yii\web\View $this */
-/** @var yii\bootstrap5\ActiveForm $form */
+/** @var yii\bootstrap4\ActiveForm $form */
 /** @var \frontend\models\SignupForm $model */
 
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
-$this->title = 'Signup';
+$this->title = 'Registar';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-signup">
-    <h1><?= Html::encode($this->title) ?></h1>
+   <div class="text-center">
+       <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>Please fill out the following fields to signup:</p>
+       <p>Por favor preencha os seguintes campos para se registar</p>
+   </div>
 
-    <div class="row">
-        <div class="col-lg-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
 
+            <div class="row">
+                <div class="col-md-6">
+                    <?= $form->field($model, 'firstname')->textInput(['autofocus' => true]) ?>
+
+                </div>
+                <div class="col-md-6">
+                    <?= $form->field($model, 'lastname')->textInput(['autofocus' => true]) ?>
+                </div>
+            </div>
                 <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
 
                 <?= $form->field($model, 'email') ?>
