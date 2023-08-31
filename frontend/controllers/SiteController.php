@@ -3,6 +3,8 @@
 namespace frontend\controllers;
 
 use common\models\Product;
+use common\models\User;
+use common\models\UserAddress;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -268,4 +270,38 @@ class SiteController extends Controller
             'model' => $model
         ]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionProfile(){
+        /**
+         * @var User $user
+         */
+        $user = Yii::$app->user->identity;
+        $userAddresses = $user->addresses;
+        $userAddress = $user->getAddress() ;
+
+        return $this->render('profile', [
+            'user' => $user,
+            'userAddress' => $userAddress
+        ]);
+    }
+
+    public function actionUpdateAddress()
+    {
+        /**
+         * @var User $user
+         */
+        $user = Yii::$app->user->identity;
+        $userAddress = $user->getAddress();
+        $success = false;
+        if ($userAddress->load(Yii::$app->request->post()) && $userAddress->save()){
+            $success = true;
+        }
+        return $this->renderAjax('user_address', [
+            'user_address' => $userAddress,
+            'success' => $success
+        ]);
+}
 }

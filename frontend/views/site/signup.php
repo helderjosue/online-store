@@ -4,8 +4,8 @@
 /** @var yii\bootstrap4\ActiveForm $form */
 /** @var \frontend\models\SignupForm $model */
 
-use yii\bootstrap5\Html;
-use yii\bootstrap5\ActiveForm;
+use yii\bootstrap4\Html;
+use yii\bootstrap4\ActiveForm;
 
 $this->title = 'Registar';
 $this->params['breadcrumbs'][] = $this->title;
