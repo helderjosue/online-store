@@ -14,6 +14,7 @@ use common\models\Product;
         <h3>Produtos do seu carrinho</h3>
     </div>
     <div class="card-body p-0">
+        <?php if (!empty($items)): ?>
         <table class="table table-hover">
             <thead>
             <tr>
@@ -51,6 +52,7 @@ use common\models\Product;
             <?php endforeach; ?>
             </tbody>
         </table>
+
        <div class="card-body text-right">
            <?php echo \yii\helpers\Html::a('Realizar Pagamento', ['/cart/checkout'], [
                'class' => 'btn btn-primary',
@@ -58,5 +60,9 @@ use common\models\Product;
            ])
            ?>
        </div>
+        <?php else: ?>
+
+        <p class="text-muted text-center p-5">Não tem produtos no carrinho!</p>
+        <?php endif;?>
     </div>
 </div>
