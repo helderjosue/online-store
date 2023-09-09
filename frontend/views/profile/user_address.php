@@ -11,18 +11,16 @@ use yii\web\View;
 
 ?>
 
-<?php \yii\widgets\Pjax::begin([
-    'enablePushState' => false
-])?>
+
 
 <?php if(isset($success) && $success): ?>
     <div class="alert alert-success">
         O seu endereco foi actualizado com sucesso!
     </div>
-<?php endif;?>
+<?php endif; ?>
 
 <?php $addressForm = ActiveForm::begin([
-    'action' => ['/site/update-address'],
+    'action' => ['/profile/update-address'],
     'options' => [
         'data-pjax' => 1
     ]
@@ -35,4 +33,3 @@ use yii\web\View;
 <?= $addressForm->field($userAddress, 'zipcode')->textInput(['autofocus' => true]) ?>
 <?= Html::submitButton('Actualizar', ['class' => 'btn btn-primary']) ?>
 <?php ActiveForm::end(); ?>
-<?php \yii\widgets\Pjax::end()?>

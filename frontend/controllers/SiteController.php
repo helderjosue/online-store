@@ -23,7 +23,7 @@ use frontend\models\ContactForm;
 /**
  * Site controller
  */
-class SiteController extends Controller
+class SiteController extends \frontend\base\Controller
 {
     /**
      * {@inheritdoc}
@@ -270,38 +270,4 @@ class SiteController extends Controller
             'model' => $model
         ]);
     }
-
-    /**
-     * @return string
-     */
-    public function actionProfile(){
-        /**
-         * @var User $user
-         */
-        $user = Yii::$app->user->identity;
-        $userAddresses = $user->addresses;
-        $userAddress = $user->getAddress() ;
-
-        return $this->render('profile', [
-            'user' => $user,
-            'userAddress' => $userAddress
-        ]);
-    }
-
-    public function actionUpdateAddress()
-    {
-        /**
-         * @var User $user
-         */
-        $user = Yii::$app->user->identity;
-        $userAddress = $user->getAddress();
-        $success = false;
-        if ($userAddress->load(Yii::$app->request->post()) && $userAddress->save()){
-            $success = true;
-        }
-        return $this->renderAjax('user_address', [
-            'user_address' => $userAddress,
-            'success' => $success
-        ]);
-}
 }
