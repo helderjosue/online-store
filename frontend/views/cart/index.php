@@ -29,7 +29,7 @@ use common\models\Product;
             <tbody>
             <?php foreach ($items as $item): ?>
 
-                <tr>
+                    <tr data-id = "<?php echo $item['id']?> " data-url = "<?php echo \yii\helpers\Url::to('/cart/change-quantity')?> ">
                     <td><?php echo $item['name'] ?></td>
                     <td>
                         <img src="<?php echo Product::formatImageUrl($item['image']) ?>"
@@ -37,7 +37,9 @@ use common\models\Product;
                              alt="<?php echo $item['name']?>">
                     </td>
                     <td><?php echo $item['price'] ?></td>
-                    <td><?php echo $item['quantity'] ?></td>
+                    <td>
+                        <input type="number" min="1" value="<?php echo $item['quantity'] ?>" class="form-control item-quantity" style="width:100px">
+                    </td>
                     <td><?php echo $item['total_price'] ?></td>
                     <td>
                         <?php echo \yii\helpers\Html::a('Remover', ['/cart/delete', 'id' => $item['id']], [
