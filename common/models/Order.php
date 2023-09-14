@@ -23,6 +23,10 @@ use Yii;
  */
 class Order extends \yii\db\ActiveRecord
 {
+
+    const STATUS_DRAFT = 0;
+    const STATUS_PAID = 1;
+    const STATUS_COMPLETED = 2;
     /**
      * {@inheritdoc}
      */
@@ -53,12 +57,12 @@ class Order extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'total_price' => 'Total Price',
-            'status' => 'Status',
-            'firstname' => 'Firstname',
-            'lastname' => 'Lastname',
+            'total_price' => 'Preço total',
+            'status' => 'Estado',
+            'firstname' => 'Primeiro nome',
+            'lastname' => 'Último nome',
             'email' => 'Email',
-            'transaction_id' => 'Transaction ID',
+            'transaction_id' => 'ID da Transacção',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
         ];

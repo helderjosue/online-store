@@ -45,11 +45,11 @@ class OrderAddress extends \yii\db\ActiveRecord
     {
         return [
             'order_id' => 'Order ID',
-            'address' => 'Address',
-            'city' => 'City',
-            'state' => 'State',
-            'country' => 'Country',
-            'zipcode' => 'Zipcode',
+            'address' => 'Endereço',
+            'city' => 'Cidade',
+            'state' => 'Distrito',
+            'country' => 'Pais',
+            'zipcode' => 'Código postal',
         ];
     }
 

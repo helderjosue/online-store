@@ -17,7 +17,7 @@ use yii\web\View;
     <div class="col">
         <div class="card">
             <div class="card-header">
-                Informacao de endereco
+                Informação de endereço
             </div>
             <div class="card-body">
                 <?php \yii\widgets\Pjax::begin([
@@ -35,7 +35,7 @@ use yii\web\View;
     <div class="col">
         <div class="card">
             <div class="card-header">
-                Informacao de conta
+                Informação de conta
             </div>
             <div class="card-body">
                 <?php \yii\widgets\Pjax::begin([

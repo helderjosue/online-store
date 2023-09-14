@@ -78,13 +78,13 @@ class Product extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Nome',
-            'description' => 'Descricao',
+            'description' => 'Descrição',
             'image' => 'Product Image',
             'imageFile' => 'Product Image',
-            'price' => 'Preco',
+            'price' => 'Preço',
             'status' => 'Publicado',
-            'created_at' => 'Data de Criacao',
-            'updated_at' => 'Data de Actualizacao',
+            'created_at' => 'Data de Criação',
+            'updated_at' => 'Data de Actualização',
             'created_by' => 'Criado por',
             'updated_by' => 'Updated By',
         ];

@@ -15,7 +15,7 @@ use yii\web\View;
 
 <?php if(isset($success) && $success): ?>
     <div class="alert alert-success">
-        O seu endereco foi actualizado com sucesso!
+        O seu endereço foi actualizado com sucesso!
     </div>
 <?php endif; ?>
 

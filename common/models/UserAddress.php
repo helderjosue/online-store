@@ -48,11 +48,11 @@ class UserAddress extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'user_id' => 'User ID',
-            'address' => 'Endereco',
+            'address' => 'Endereço',
             'city' => 'Cidade',
             'state' => 'Distrito',
             'country' => 'Pais',
-            'zipcode' => 'Codigo postal',
+            'zipcode' => 'Código postal',
         ];
     }
 
