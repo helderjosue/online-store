@@ -9,6 +9,7 @@ use common\models\OrderAddress;
 use common\models\Product;
 use common\models\User;
 use Yii;
+use yii\db\Exception;
 use yii\filters\ContentNegotiator;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -26,7 +27,7 @@ class CartController extends \frontend\base\Controller
         return [
             [
                 'class'=> ContentNegotiator::class,
-                'only' => ['add'],
+                'only' => ['add', 'create-order'],
                 'formats' => [
                     'application/json'=> Response::FORMAT_JSON,
                 ]
@@ -34,7 +35,8 @@ class CartController extends \frontend\base\Controller
             [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST', 'DELETE']
+                    'delete' => ['POST', 'DELETE'],
+                    'create-order' => ['POST']
                 ]
             ]
         ];
@@ -42,13 +44,9 @@ class CartController extends \frontend\base\Controller
 
     public function actionIndex(){
 
-        if(isGuest()){
-            //get the items from session
-            $cartItems = Yii::$app->session->get(CartItem::SESSION_KEY, []);
-        }else{
+
             $cartItems = CartItem::getItemsForCurrentUser(currentUserId());
 
-        }
 
         return $this->render('index', [
             'items' => $cartItems
@@ -199,10 +197,8 @@ class CartController extends \frontend\base\Controller
             $orderAddress->state = $userAddress->state;
             $orderAddress->country = $userAddress->country;
             $orderAddress->zipcode = $userAddress->zipcode;
-            $cartItems = CartItem::getItemsForCurrentUser(currentUserId());
-        }else{
-            $cartItems = Yii::$app->session->get(CartItem::SESSION_KEY, []);
         }
+        $cartItems = CartItem::getItemsForCurrentUser(currentUserId());
 
         $productQuantity = CartItem::getTotalQuantityForUser(currentUserId());
         $totalPrice = CartItem::getTotalPriceForUser(currentUserId());
@@ -214,6 +210,53 @@ class CartController extends \frontend\base\Controller
             'productQuantity' => $productQuantity,
             'totalPrice' => $totalPrice
         ]);
+
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function actionCreateOrder(){
+
+
+        $transactionId =  Yii::$app->request->post('transactionId');
+        $status = Yii::$app->request->post('status');
+
+        $order = new Order();
+        $order->transaction_id = $transactionId;
+        $order->total_price = CartItem::getTotalPriceForUser(currentUserId());
+        $order->status = $status === 'COMPLETED' ? Order::STATUS_COMPLETED : Order::STATUS_FAILED;
+        $order->created_at = time();
+        $order->created_by = currentUserId();
+
+        if ($order->load(Yii::$app->request->post())
+            && $order->save()
+            && $order->saveAddress(Yii::$app->request->post())
+            && $order->saveOrderItems()){
+
+                return [
+                    'success' => true
+                ];
+
+
+        }else{
+            return [
+                'success' => false,
+                'errors' => $order->errors
+            ];
+        }
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 }

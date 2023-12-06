@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\db\Exception;
 
 /**
  * This is the model class for table "{{%orders}}".
@@ -18,15 +19,16 @@ use Yii;
  * @property int|null $created_by
  *
  * @property User $createdBy
- * @property OrderAddresses $orderAddresses
- * @property OrderItems[] $orderItems
+ * @property OrderAddress $orderAddresses
+ * @property OrderItem[] $orderItems
  */
 class Order extends \yii\db\ActiveRecord
 {
 
     const STATUS_DRAFT = 0;
-    const STATUS_PAID = 1;
-    const STATUS_COMPLETED = 2;
+    const STATUS_COMPLETED = 1;
+    const STATUS_PAID = 2;
+    const STATUS_FAILED = 3;
     /**
      * {@inheritdoc}
      */
@@ -81,21 +83,21 @@ class Order extends \yii\db\ActiveRecord
     /**
      * Gets query for [[OrderAddresses]].
      *
-     * @return \yii\db\ActiveQuery|\common\models\query\OrderAddressesQuery
+     * @return \yii\db\ActiveQuery|\common\models\query\OrderAddressQuery
      */
     public function getOrderAddresses()
     {
-        return $this->hasOne(OrderAddresses::class, ['order_id' => 'id']);
+        return $this->hasOne(OrderAddress::class, ['order_id' => 'id']);
     }
 
     /**
      * Gets query for [[OrderItems]].
      *
-     * @return \yii\db\ActiveQuery|\common\models\query\OrderItemsQuery
+     * @return \yii\db\ActiveQuery|\common\models\query\OrderItemQuery
      */
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItems::class, ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     /**
@@ -105,5 +107,41 @@ class Order extends \yii\db\ActiveRecord
     public static function find()
     {
         return new \common\models\query\OrderQuery(get_called_class());
+    }
+
+    public function saveOrderItems(): bool
+    {
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        $cartItems = CartItem::getItemsForCurrentUser(currentUserId());
+
+        foreach ($cartItems as $cartItem){
+            $orderItem = new OrderItem();
+            $orderItem->product_name = $cartItem['name'];
+            $orderItem->product_id = $cartItem['id'];
+            $orderItem->unit_price = $cartItem['price'];
+            $orderItem->order_id = $this->id;
+            $orderItem->quantity = $cartItem['quantity'];
+
+            if ($orderItem->save()){
+                $transaction->rollBack();
+                throw new Exception("Order Item was not saved!"
+                    .implode('<br>', $orderItem->getFirstErrors()));
+            }
+        }
+
+        $transaction->commit();
+        return true;
+    }
+
+    public function saveAddress($postData)
+    {
+        $orderAddress = new OrderAddress();
+        $orderAddress->order_id = $this->id;
+        if ($orderAddress->load($postData) && $orderAddress->save()) {
+            return true;
+        }
+        return throw new Exception("Could not save Order Address". implode("<br>", $orderAddress->getFirstErrors()));
     }
 }
